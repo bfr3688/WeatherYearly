@@ -1,23 +1,37 @@
 clc
 clear
 
-dataString = csvRead("722899_2010_solar.csv",[],[],'string',[],[]);
+dataImportRaw = csvRead("C:\Users\user\Documents\Scilab\Weather-Chino\722899_2010_solar.csv",[],[],'string',[],[]);
+
+dataImportRaw = [dataImportRaw; string(zeros(1, size(dataImportRaw,'c')))];
+
+function [splitMatrix] = splitdate(a)
+    b = strsplit(a,"-");
+    splitMatrix = b';
+endfunction
 
 j=1;
 
-for i = 3:size(dataString,'r')
-    if dataString(i,1) ~= dataString(i-1,1) then
-        dataStringSummed(j,1) = dataString(i-1,1);
-        dayInsolation = sum(strtod(dataString(i-20:i, 16)));   
-        dataStringSummed(j,2) = string(j);
-        dataStringSummed(j,3) = string(dayInsolation);
+for i = 3:size(dataImportRaw,'r')
+    if dataImportRaw(i,1) ~= dataImportRaw(i-1,1) then
+        dataStringDaily(j,1) = string(j);
+        dataStringDaily(j,2:4) = splitdate(dataImportRaw(i-1,1));
+        dayInsolation = string(sum(strtod(dataImportRaw(i-20:i, 16))));
         
-        dataDoubleSummed(j,1) = j
-        dataDoubleSummed(j,2) = dayInsolation
+        dataStringDaily(j,5) = dayInsolation;
+
         j=j+1;
     end,
 end
 
-plot(dataDoubleSummed(1:$,1),dataDoubleSummed(1:$,2),".");
+for i = 1: size(dataStringDaily,'r')
+    
+end
+
+
+
+
+
+plot(strtod(dataStringDaily(1:$,1)),strtod(dataStringDaily(1:$,5)),'.');
 
 
